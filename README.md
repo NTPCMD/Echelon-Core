@@ -9,10 +9,10 @@ Production-oriented MVP foundation for Echelon, an AI-powered operating system f
 
 ## Packages
 
-- `packages/database` — Prisma schema, generated client export, and deterministic seed data.
+- `packages/database` — Prisma schema and client export.
 - `packages/shared` — shared domain constants and validation schemas.
 - `packages/types` — shared TypeScript contracts.
-- `packages/ai` — provider-abstracted AI gateway with OpenAI implementation and local fallback.
+- `packages/ai` — provider-abstracted AI gateway with OpenAI implementation.
 - `packages/integrations` — Stripe and GoHighLevel integration boundaries.
 - `packages/ui` — reusable UI primitives.
 
@@ -21,16 +21,7 @@ Production-oriented MVP foundation for Echelon, an AI-powered operating system f
 ```bash
 pnpm install
 cp .env.example .env
-docker compose up -d postgres redis
-pnpm db:generate
-pnpm db:push
-pnpm db:seed
+pnpm typecheck
+pnpm lint
 pnpm dev
 ```
-
-- Web: http://localhost:3000
-- API: http://localhost:4000
-- Health check: http://localhost:4000/health
-- AI search endpoint: `POST http://localhost:4000/chat`
-
-The API seeds the database on startup when no businesses exist, so local development works after `docker compose up` and Prisma setup.
