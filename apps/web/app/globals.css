@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+body { @apply bg-[#f7f4ef] text-ink antialiased dark:bg-[#080a12] dark:text-white; }
+.glass { @apply border border-white/50 bg-white/75 shadow-xl backdrop-blur dark:border-white/10 dark:bg-white/10; }

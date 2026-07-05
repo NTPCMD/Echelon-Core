@@ -1,0 +1,1 @@
+export default function DashboardPage() { return <main className="p-8"><h1 className="text-4xl font-semibold">User Dashboard</h1><div className="mt-8 grid gap-4 md:grid-cols-3">{["Upcoming bookings", "Saved favourites", "Rewards"].map((item) => <section className="rounded-3xl bg-white p-6 shadow-sm" key={item}>{item}</section>)}</div></main>; }
