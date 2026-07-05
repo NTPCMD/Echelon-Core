@@ -1,0 +1,20 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum UserRole { CUSTOMER BUSINESS ADMIN }
+enum BookingStatus { PENDING CONFIRMED CANCELLED COMPLETED }
+enum ModuleKind { SERVICES JOBS RECRUITMENT FREELANCING NETWORKING EVENTS HOTELS RESTAURANTS MARKETPLACE REWARDS AI_CONCIERGE }
+
+model User { id String @id @default(cuid()) email String @unique name String passwordHash String role UserRole @default(CUSTOMER) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt refreshTokens RefreshToken[] bookings Booking[] reviews Review[] favourites Favourite[] messages Message[] notifications Notification[] rewards RewardLedger[] }
+model RefreshToken { id String @id @default(cuid()) tokenHash String userId String expiresAt DateTime revokedAt DateTime? user User @relation(fields:[userId], references:[id], onDelete:Cascade) }
+model Category { id String @id @default(cuid()) name String @unique slug String @unique module ModuleKind @default(SERVICES) businesses Business[] }
+model Business { id String @id @default(cuid()) ownerId String name String slug String @unique description String logoUrl String coverUrl String gallery String[] categoryId String suburb String city String country String @default("AU") latitude Float? longitude Float? openingHours Json ghlLocationId String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt category Category @relation(fields:[categoryId], references:[id]) services Service[] staff Staff[] bookings Booking[] reviews Review[] favourites Favourite[] messages Message[] }
+model Service { id String @id @default(cuid()) businessId String name String priceCents Int durationMinutes Int description String availability Json active Boolean @default(true) business Business @relation(fields:[businessId], references:[id], onDelete:Cascade) bookings Booking[] @@unique([businessId, name]) }
+model Staff { id String @id @default(cuid()) businessId String name String title String avatarUrl String availability Json business Business @relation(fields:[businessId], references:[id], onDelete:Cascade) bookings Booking[] @@unique([businessId, name]) }
+model Booking { id String @id @default(cuid()) customerId String businessId String serviceId String staffId String startsAt DateTime endsAt DateTime status BookingStatus @default(PENDING) paymentIntentId String? customerNotes String? createdAt DateTime @default(now()) customer User @relation(fields:[customerId], references:[id]) business Business @relation(fields:[businessId], references:[id]) service Service @relation(fields:[serviceId], references:[id]) staff Staff @relation(fields:[staffId], references:[id]) }
+model Review { id String @id @default(cuid()) userId String businessId String rating Int comment String createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id]) business Business @relation(fields:[businessId], references:[id]) }
+model Favourite { userId String businessId String createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id], onDelete:Cascade) business Business @relation(fields:[businessId], references:[id], onDelete:Cascade) @@id([userId,businessId]) }
+model Message { id String @id @default(cuid()) userId String businessId String body String readAt DateTime? createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id]) business Business @relation(fields:[businessId], references:[id]) }
+model Notification { id String @id @default(cuid()) userId String title String body String readAt DateTime? createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id]) }
+model RewardLedger { id String @id @default(cuid()) userId String points Int reason String createdAt DateTime @default(now()) user User @relation(fields:[userId], references:[id]) }
+model FutureModuleRecord { id String @id @default(cuid()) module ModuleKind entityType String entityId String payload Json createdAt DateTime @default(now()) @@index([module, entityType]) }
