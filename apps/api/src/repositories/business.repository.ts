@@ -1,0 +1,2 @@
+import { businesses } from "../lib/seed.js";
+export class BusinessRepository { async list(query?: { category?: string; location?: string }) { return businesses.filter((business) => (!query?.category || business.category.toLowerCase().includes(query.category.toLowerCase())) && (!query?.location || business.city.toLowerCase().includes(query.location.toLowerCase()))); } async findById(id: string) { return businesses.find((business) => business.id === id || business.slug === id) ?? null; } }
