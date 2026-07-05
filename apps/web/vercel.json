@@ -1,6 +1,6 @@
 {
+  "framework": "nextjs",
   "buildCommand": "cd ../.. && pnpm turbo run build --filter=@echelon/web",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "installCommand": "pnpm install"
+  "installCommand": "cd ../.. && pnpm install"
 }
