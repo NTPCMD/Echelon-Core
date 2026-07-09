@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Star, MapPin, ArrowRight, Briefcase, Wrench, Calendar, UtensilsCrossed, BedDouble, Users, Zap, ClipboardList, ChevronRight } from "lucide-react";
 import { AiSearch } from "../components/ai-search";
+import { AuthControls } from "../components/auth-controls";
 import { businesses } from "../lib/seed";
+import { clerkEnabled } from "../lib/clerk";
 
 const MODULES = [
   {
@@ -100,15 +102,21 @@ export default function Home() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 sm:px-10">
         <b className="text-2xl tracking-tight">Echelon</b>
         <div className="flex items-center gap-6 text-sm">
-          <Link href="/auth/login" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white">
-            Login
-          </Link>
-          <Link href="/auth/register" className="rounded-full bg-brand px-5 py-2 font-semibold text-white hover:opacity-90">
-            Sign up
-          </Link>
           <Link href="/business-dashboard" className="hidden text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white sm:block">
             For business
           </Link>
+          {clerkEnabled ? (
+            <AuthControls />
+          ) : (
+            <>
+              <Link href="/auth/login" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white">
+                Login
+              </Link>
+              <Link href="/auth/register" className="rounded-full bg-brand px-5 py-2 font-semibold text-white hover:opacity-90">
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
