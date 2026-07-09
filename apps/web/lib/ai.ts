@@ -1,6 +1,7 @@
 import type { SearchIntent } from "@echelon/types";
 
 const CATEGORY_MAP: Record<string, string> = {
+  // Services
   hair: "Hair Salon",
   haircut: "Hair Salon",
   barber: "Hair Salon",
@@ -9,14 +10,12 @@ const CATEGORY_MAP: Record<string, string> = {
   salon: "Hair Salon",
   photo: "Photography",
   photographer: "Photography",
-  wedding: "Photography",
   portrait: "Photography",
   massage: "Massage",
   remedial: "Massage",
   relaxation: "Massage",
   physio: "Massage",
   dj: "DJ & Entertainment",
-  music: "DJ & Entertainment",
   entertainment: "DJ & Entertainment",
   band: "DJ & Entertainment",
   beauty: "Beauty",
@@ -30,8 +29,53 @@ const CATEGORY_MAP: Record<string, string> = {
   trainer: "Personal Training",
   gym: "Personal Training",
   workout: "Personal Training",
-  training: "Personal Training",
   pt: "Personal Training",
+  // Jobs
+  job: "Jobs",
+  jobs: "Jobs",
+  employment: "Jobs",
+  hiring: "Jobs",
+  career: "Jobs",
+  vacancy: "Jobs",
+  // Freelancing
+  freelance: "Freelancing",
+  freelancer: "Freelancing",
+  developer: "Freelancing",
+  designer: "Freelancing",
+  marketer: "Freelancing",
+  copywriter: "Freelancing",
+  // One-off tasks
+  cleaner: "One-Off Jobs",
+  cleaning: "One-Off Jobs",
+  handyman: "One-Off Jobs",
+  moving: "One-Off Jobs",
+  removalist: "One-Off Jobs",
+  task: "One-Off Jobs",
+  // Events
+  event: "Events",
+  events: "Events",
+  conference: "Events",
+  workshop: "Events",
+  concert: "Events",
+  networking: "Networking",
+  // Food
+  restaurant: "Food",
+  dinner: "Food",
+  lunch: "Food",
+  brunch: "Food",
+  reservation: "Food",
+  table: "Food",
+  // Accommodation
+  hotel: "Accommodation",
+  accommodation: "Accommodation",
+  stay: "Accommodation",
+  cabin: "Accommodation",
+  airbnb: "Accommodation",
+  // Networking
+  mentor: "Networking",
+  investor: "Networking",
+  founder: "Networking",
+  connect: "Networking",
 };
 
 export interface ParsedIntent {
@@ -58,7 +102,9 @@ export function parseIntent(message: string, location?: string): ParsedIntent {
     lower.includes("tomorrow") ||
     lower.includes("tonight") ||
     lower.includes("today") ||
-    lower.includes("available");
+    lower.includes("available") ||
+    lower.includes("reserve") ||
+    lower.includes("need");
 
   const intent: SearchIntent = hasBookingSignal && category
     ? "book_service"

@@ -6,11 +6,12 @@ import Link from "next/link";
 import type { FormEvent } from "react";
 
 const SUGGESTIONS = [
-  "Book a haircut tomorrow afternoon",
-  "Find a wedding photographer in Perth",
-  "I need a DJ for my birthday party",
-  "Relaxation massage near me",
-  "Personal trainer for strength training",
+  "I need a DJ for my wedding",
+  "Book a haircut tomorrow",
+  "Find me a marketing job",
+  "Reserve dinner for six tonight",
+  "Find networking events this weekend",
+  "I need someone to build my website",
 ];
 
 function formatPrice(cents: number) {
