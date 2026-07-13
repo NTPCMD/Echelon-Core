@@ -1,1 +1,7 @@
-export default function BusinessDashboardPage() { return <main className="p-8"><h1 className="text-4xl font-semibold">Business Dashboard</h1><div className="mt-8 grid gap-4 md:grid-cols-3">{["Bookings", "Customers", "Analytics", "Calendar", "Reviews", "Messages", "Settings"].map((item) => <section className="rounded-3xl bg-white p-6 shadow-sm" key={item}>{item}</section>)}</div></main>; }
+import { OverviewDashboard } from "../../components/dashboard/overview";
+import { requireBusinessContext } from "../../lib/auth-context";
+
+export default async function BusinessDashboardPage() {
+  await requireBusinessContext("/business-dashboard");
+  return <OverviewDashboard />;
+}

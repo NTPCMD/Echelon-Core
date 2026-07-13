@@ -1,1 +1,37 @@
-export default function RegisterPage() { return <main className="grid min-h-screen place-items-center p-6"><form className="glass w-full max-w-md rounded-3xl p-8"><h1 className="text-3xl font-semibold">Create your account</h1><input className="mt-8 w-full rounded-2xl border p-4" placeholder="Name"/><input className="mt-3 w-full rounded-2xl border p-4" placeholder="Email"/><input className="mt-3 w-full rounded-2xl border p-4" placeholder="Password" type="password"/><button className="mt-6 w-full rounded-2xl bg-brand p-4 font-semibold text-white">Register</button></form></main>; }
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { RegisterExperience } from "../../../components/marketing/account-auth";
+import { AuthShell } from "../../../components/marketing/auth-shell";
+import {
+  buildAuthContinuationUrl,
+  resolveAuthIntent,
+  type AuthSearchParams,
+} from "../../../lib/auth-intent";
+import { clerkEnabled } from "../../../lib/clerk";
+
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<AuthSearchParams>;
+}) {
+  const intent = resolveAuthIntent(await searchParams, "register");
+
+  if (clerkEnabled) {
+    const { userId } = await auth();
+    if (userId) redirect(buildAuthContinuationUrl(intent.mode, intent.returnTo));
+  }
+
+  return (
+    <AuthShell
+      eyebrow="Join Echelon"
+      title="One identity. Two private worlds."
+      description="Use Echelon personally, run a business, or do both with the same email—without mixing customer and company information."
+    >
+      <RegisterExperience
+        clerkEnabled={clerkEnabled}
+        initialMode={intent.mode}
+        requestedReturnTo={intent.returnTo}
+      />
+    </AuthShell>
+  );
+}

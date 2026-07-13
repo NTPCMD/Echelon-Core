@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "pnpm --filter @echelon/web exec next build",
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install"
+}

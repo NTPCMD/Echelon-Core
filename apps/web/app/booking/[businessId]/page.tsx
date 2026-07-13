@@ -1,1 +1,32 @@
-export default function BookingPage() { const steps = ["Business", "Service", "Staff", "Date", "Time", "Confirmation", "Stripe stub", "Success"]; return <main className="px-6 py-10"><div className="mx-auto max-w-4xl rounded-3xl bg-white p-8 shadow-glow"><h1 className="text-4xl font-semibold">Book a service</h1><div className="mt-8 grid gap-3">{steps.map((step, index) => <div className="rounded-2xl border p-4" key={step}>{index + 1}. {step}</div>)}</div></div></main>; }
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BookingFlow } from "../../../components/marketing/booking-flow";
+import { MarketingShell } from "../../../components/marketing/site-shell";
+import { businesses } from "../../../lib/seed";
+
+function findBusiness(id: string) {
+  return businesses.find((business) => business.id === id || business.slug === id);
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ businessId: string }> }): Promise<Metadata> {
+  const { businessId } = await params;
+  const business = findBusiness(businessId);
+  return {
+    title: business ? `Book ${business.name} — Echelon` : "Book a service — Echelon",
+    description: business ? `Choose a service and live appointment time with ${business.name}.` : "Book a trusted local service on Echelon.",
+  };
+}
+
+export default async function BookingPage({ params }: { params: Promise<{ businessId: string }> }) {
+  const { businessId } = await params;
+  const business = findBusiness(businessId);
+  if (!business) notFound();
+
+  return (
+    <MarketingShell>
+      <main>
+        <BookingFlow business={business} todayIso={new Date().toISOString()} />
+      </main>
+    </MarketingShell>
+  );
+}
