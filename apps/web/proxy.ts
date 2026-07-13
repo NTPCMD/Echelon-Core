@@ -19,6 +19,9 @@ const authorizedParties = Array.from(
 
 const handler = clerkEnabled
   ? clerkMiddleware({
+      frontendApiProxy: {
+        enabled: true,
+      },
       ...(authorizedParties.length ? { authorizedParties } : {}),
     })
   : (_req: NextRequest, _ev: NextFetchEvent) => NextResponse.next();

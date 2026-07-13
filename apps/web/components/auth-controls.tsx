@@ -1,5 +1,5 @@
 "use client";
-import { Show, UserButton, useAuth } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import { ArrowUpRight, Building2, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,14 +11,14 @@ import { NotificationsBell } from "./consumer/notifications-bell";
 // non-Clerk fallback in marketing-header so the header looks identical either way.
 export function AuthControls() {
   const pathname = usePathname();
-  const { orgId } = useAuth();
+  const { isLoaded, isSignedIn, orgId } = useAuth();
   const businessIntent = pathname === "/for-business" || pathname.startsWith("/business-dashboard");
   const loginHref = businessIntent ? "/auth/login?mode=business" : "/auth/login";
   const registerHref = businessIntent ? "/auth/register?mode=business" : "/auth/register";
 
-  return (
-    <>
-      <Show when="signed-out">
+  if (!isLoaded || !isSignedIn) {
+    return (
+      <>
         <Link
           href={loginHref}
           className="text-[11px] font-medium text-white/38 transition hover:text-white/75"
@@ -31,37 +31,40 @@ export function AuthControls() {
         >
           Join Echelon <ArrowUpRight className="size-3.5" />
         </Link>
-      </Show>
-      <Show when="signed-in">
-        <Link
-          href={orgId ? "/business-dashboard" : "/dashboard"}
-          className="text-[11px] font-medium text-white/38 transition hover:text-white/75"
-        >
-          {orgId ? "Business dashboard" : "Dashboard"}
-        </Link>
-        <NotificationsBell />
-        <UserButton
-          appearance={{
-            elements: {
-              avatarBox: "size-9",
-              userButtonPopoverCard: "bg-[#131318] border border-white/[.08]",
-            },
-          }}
-        >
-          <UserButton.MenuItems>
-            <UserButton.Link
-              label="Personal dashboard"
-              href="/auth/continue?mode=consumer&returnTo=%2Fdashboard"
-              labelIcon={<UserRound className="size-4" />}
-            />
-            <UserButton.Link
-              label="Business workspace"
-              href="/auth/continue?mode=business&returnTo=%2Fbusiness-dashboard"
-              labelIcon={<Building2 className="size-4" />}
-            />
-          </UserButton.MenuItems>
-        </UserButton>
-      </Show>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Link
+        href={orgId ? "/business-dashboard" : "/dashboard"}
+        className="text-[11px] font-medium text-white/38 transition hover:text-white/75"
+      >
+        {orgId ? "Business dashboard" : "Dashboard"}
+      </Link>
+      <NotificationsBell />
+      <UserButton
+        appearance={{
+          elements: {
+            avatarBox: "size-9",
+            userButtonPopoverCard: "bg-[#131318] border border-white/[.08]",
+          },
+        }}
+      >
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label="Personal dashboard"
+            href="/auth/continue?mode=consumer&returnTo=%2Fdashboard"
+            labelIcon={<UserRound className="size-4" />}
+          />
+          <UserButton.Link
+            label="Business workspace"
+            href="/auth/continue?mode=business&returnTo=%2Fbusiness-dashboard"
+            labelIcon={<Building2 className="size-4" />}
+          />
+        </UserButton.MenuItems>
+      </UserButton>
     </>
   );
 }
