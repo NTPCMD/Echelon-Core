@@ -1,6 +1,8 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
+import { NextRequest, NextResponse, type NextFetchEvent } from "next/server";
 
+const clerkProxyPath = "/identity-api";
+const clerkProxyOrigin = "https://echelonapp.net";
 const clerkEnabled = Boolean(
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY,
 );
@@ -17,15 +19,35 @@ const authorizedParties = Array.from(
   ),
 );
 
-const handler = clerkEnabled
+const clerkHandler = clerkEnabled
   ? clerkMiddleware({
       frontendApiProxy: {
         enabled: true,
-        path: "/identity-api",
+        path: clerkProxyPath,
       },
+      proxyUrl: `${clerkProxyOrigin}${clerkProxyPath}`,
       ...(authorizedParties.length ? { authorizedParties } : {}),
     })
-  : (_req: NextRequest, _ev: NextFetchEvent) => NextResponse.next();
+  : undefined;
+
+const handler = (request: NextRequest, event: NextFetchEvent) => {
+  if (!clerkHandler) {
+    return NextResponse.next();
+  }
+
+  if (
+    request.nextUrl.pathname === clerkProxyPath ||
+    request.nextUrl.pathname.startsWith(`${clerkProxyPath}/`)
+  ) {
+    const headers = new Headers(request.headers);
+    headers.set("x-forwarded-host", new URL(clerkProxyOrigin).host);
+    headers.set("x-forwarded-proto", "https");
+
+    return clerkHandler(new NextRequest(request, { headers }), event);
+  }
+
+  return clerkHandler(request, event);
+};
 
 export default handler;
 
