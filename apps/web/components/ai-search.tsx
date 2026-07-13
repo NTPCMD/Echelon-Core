@@ -57,29 +57,29 @@ export function AiSearch() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <motion.form
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="glass flex items-center gap-3 rounded-full p-2"
+        className="flex items-center gap-2 rounded-[22px] border border-white/[.09] bg-[#131319]/92 p-2.5 shadow-[0_24px_90px_rgba(0,0,0,.42),0_0_70px_rgba(108,92,231,.08),inset_0_1px_0_rgba(255,255,255,.04)] backdrop-blur-2xl transition focus-within:border-violet-400/30 focus-within:shadow-[0_28px_100px_rgba(0,0,0,.48),0_0_80px_rgba(108,92,231,.13)]"
       >
         {loading ? (
-          <Loader2 className="ml-4 size-5 animate-spin text-brand" />
+          <Loader2 className="ml-2 size-5 animate-spin text-violet-300 sm:ml-3" />
         ) : (
-          <Search className="ml-4 size-5 text-brand" />
+          <Search className="ml-2 size-5 text-violet-300 sm:ml-3" />
         )}
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Book a haircut tomorrow, find a DJ, massage near me…"
-          className="min-w-0 flex-1 bg-transparent px-2 py-4 text-base outline-none placeholder:text-black/40 dark:placeholder:text-white/30"
+          className="min-w-0 flex-1 bg-transparent px-2 py-3 text-[12px] text-white/78 outline-none placeholder:text-white/22 sm:py-4 sm:text-[14px]"
         />
         {(query || results) && (
           <button
             type="button"
             onClick={clearResults}
-            className="rounded-full p-2 text-black/40 hover:text-black dark:text-white/30 dark:hover:text-white"
+            className="rounded-xl p-2 text-white/24 transition hover:bg-white/[.05] hover:text-white/65"
           >
             <X className="size-4" />
           </button>
@@ -87,7 +87,7 @@ export function AiSearch() {
         <button
           type="submit"
           disabled={loading || !query.trim()}
-          className="rounded-full bg-ink px-6 py-4 text-sm font-semibold text-white transition disabled:opacity-50 dark:bg-white dark:text-ink"
+          className="h-11 shrink-0 rounded-[14px] border border-violet-400/20 bg-gradient-to-b from-[#7c6cf8] to-[#6354dd] px-4 text-[10px] font-semibold text-white shadow-[0_12px_32px_rgba(108,92,231,.22)] transition hover:-translate-y-px disabled:translate-y-0 disabled:opacity-35 sm:h-12 sm:px-6 sm:text-[11px]"
         >
           Ask Echelon
         </button>
@@ -106,7 +106,7 @@ export function AiSearch() {
                 key={s}
                 type="button"
                 onClick={() => handleSuggestion(s)}
-                className="rounded-full border border-white/60 bg-white/60 px-4 py-2 text-xs text-black/60 backdrop-blur transition hover:bg-white hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
+                className="rounded-full border border-white/[.065] bg-white/[.025] px-3 py-1.5 text-[8px] text-white/26 backdrop-blur transition hover:border-violet-400/15 hover:bg-violet-400/[.05] hover:text-white/55 sm:px-4 sm:py-2 sm:text-[9px]"
               >
                 {s}
               </button>
@@ -131,12 +131,12 @@ export function AiSearch() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="mt-4 overflow-hidden rounded-3xl border border-white/50 bg-white/90 shadow-glow backdrop-blur dark:border-white/10 dark:bg-white/5"
+            className="mt-4 overflow-hidden rounded-[22px] border border-white/[.09] bg-[#131319]/95 shadow-[0_28px_100px_rgba(0,0,0,.48)] backdrop-blur-2xl"
           >
             <div className="border-b border-black/5 px-6 py-4 dark:border-white/5">
-              <p className="text-sm font-medium text-ink dark:text-white">{results.message}</p>
+              <p className="text-[11px] font-medium text-white/72">{results.message}</p>
               {results.category && (
-                <p className="mt-0.5 text-xs text-black/50 dark:text-white/40">
+                <p className="mt-1 text-[8px] text-white/25">
                   {results.intent === "book_service" ? "Ready to book" : "Browsing"} · {results.category}
                   {results.location ? ` · ${results.location}` : ""}
                 </p>
@@ -144,7 +144,7 @@ export function AiSearch() {
             </div>
 
             {results.businesses.length === 0 ? (
-              <p className="px-6 py-8 text-center text-sm text-black/40 dark:text-white/30">
+              <p className="px-6 py-8 text-center text-[10px] text-white/28">
                 No businesses found. Try a different search.
               </p>
             ) : (
@@ -153,12 +153,12 @@ export function AiSearch() {
                   <li key={biz.id}>
                     <Link
                       href={`/businesses/${biz.slug}`}
-                      className="flex items-center gap-4 px-6 py-4 transition hover:bg-brand/5"
+                      className="flex items-center gap-4 px-5 py-4 transition hover:bg-violet-400/[.045] sm:px-6"
                     >
-                      <div className="size-12 flex-shrink-0 rounded-2xl bg-gradient-to-br from-brand to-rose-300" />
+                      <div className="size-11 flex-shrink-0 rounded-xl bg-gradient-to-br from-violet-500/70 to-indigo-300/50 ring-1 ring-white/10" />
                       <div className="flex-1 text-left">
-                        <p className="font-semibold text-ink dark:text-white">{biz.name}</p>
-                        <div className="mt-0.5 flex items-center gap-3 text-xs text-black/50 dark:text-white/40">
+                        <p className="text-[10px] font-semibold text-white/68">{biz.name}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-3 text-[8px] text-white/24">
                           <span className="flex items-center gap-1">
                             <MapPin className="size-3" />
                             {biz.suburb}
@@ -174,10 +174,10 @@ export function AiSearch() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-ink dark:text-white">
+                        <p className="text-[10px] font-semibold text-white/62">
                           {formatPrice(biz.services[0]?.priceCents ?? 0)}
                         </p>
-                        <p className="text-xs text-brand">Book now →</p>
+                        <p className="mt-1 text-[8px] text-violet-300">Book now →</p>
                       </div>
                     </Link>
                   </li>

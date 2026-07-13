@@ -1,12 +1,26 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
 
-// Clerk only activates once a publishable key is configured. Until then the
-// proxy is a pass-through so the app builds and deploys without Clerk keys.
-const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+const clerkEnabled = Boolean(
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY,
+);
+const withHttps = (host: string | undefined) =>
+  host ? (host.startsWith("http://") || host.startsWith("https://") ? host : `https://${host}`) : undefined;
+const authorizedParties = Array.from(
+  new Set(
+    [
+      withHttps(process.env.NEXT_PUBLIC_APP_URL),
+      withHttps(process.env.VERCEL_PROJECT_PRODUCTION_URL),
+      withHttps(process.env.VERCEL_URL),
+      process.env.NODE_ENV === "development" ? "http://localhost:3000" : undefined,
+    ].filter((value): value is string => Boolean(value)),
+  ),
+);
 
 const handler = clerkEnabled
-  ? clerkMiddleware()
+  ? clerkMiddleware({
+      ...(authorizedParties.length ? { authorizedParties } : {}),
+    })
   : (_req: NextRequest, _ev: NextFetchEvent) => NextResponse.next();
 
 export default handler;
