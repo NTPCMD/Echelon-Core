@@ -21,6 +21,7 @@ const handler = clerkEnabled
   ? clerkMiddleware({
       frontendApiProxy: {
         enabled: true,
+        path: "/identity-api",
       },
       ...(authorizedParties.length ? { authorizedParties } : {}),
     })
@@ -34,7 +35,7 @@ export const config = {
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
-    // Clerk auto-proxy path
-    "/__clerk/:path*",
+    // Clerk frontend API proxy path
+    "/identity-api/:path*",
   ],
 };

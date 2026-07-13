@@ -28,7 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {clerkEnabled ? (
           <ClerkProvider
-            proxyUrl="/__clerk"
+            proxyUrl="/identity-api"
             signInUrl="/auth/login"
             signUpUrl="/auth/register"
             signInFallbackRedirectUrl="/auth/continue?mode=consumer&returnTo=%2Fdashboard"
