@@ -16,20 +16,25 @@ export function ModuleListings({ slug, listings }: { slug: string; listings: Lis
   const module = getModule(slug);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState(module?.filters[0] ?? "All");
+  const [location, setLocation] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+    const locationQuery = location.trim().toLowerCase();
     return listings.filter((listing) => {
-      const matchesFilter = filter === "All" || listing.category === filter;
+      const matchesFilter =
+        filter === "All" || listing.category === filter || listing.tags.some((tag) => tag === filter);
       const matchesQuery =
         !q ||
         listing.title.toLowerCase().includes(q) ||
         listing.subtitle.toLowerCase().includes(q) ||
         listing.location.toLowerCase().includes(q) ||
         listing.tags.some((tag) => tag.toLowerCase().includes(q));
-      return matchesFilter && matchesQuery;
+      const matchesLocation = !locationQuery || listing.location.toLowerCase().includes(locationQuery);
+      return matchesFilter && matchesQuery && matchesLocation;
     });
-  }, [listings, filter, query]);
+  }, [listings, filter, location, query]);
 
   if (!module) return null;
 
@@ -47,11 +52,40 @@ export function ModuleListings({ slug, listings }: { slug: string; listings: Lis
         </div>
         <button
           type="button"
-          className="hidden items-center gap-2 rounded-2xl border border-white/[.08] bg-[#121217] px-4 py-2.5 text-[9px] font-semibold text-white/40 transition hover:text-white/70 lg:inline-flex"
+          onClick={() => setFiltersOpen((value) => !value)}
+          aria-expanded={filtersOpen}
+          className={`hidden items-center gap-2 rounded-2xl border px-4 py-2.5 text-[9px] font-semibold transition lg:inline-flex ${
+            filtersOpen || location ? "border-violet-400/25 bg-violet-400/[.07] text-violet-200" : "border-white/[.08] bg-[#121217] text-white/40 hover:text-white/70"
+          }`}
         >
           <SlidersHorizontal className="size-3.5" /> Filters
         </button>
       </div>
+
+      {filtersOpen ? (
+        <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-white/[.07] bg-[#121217] p-4 sm:flex-row sm:items-end">
+          <label className="block flex-1 text-[8px] font-semibold uppercase tracking-[.12em] text-white/26">
+            Location
+            <input
+              value={location}
+              onChange={(event) => setLocation(event.target.value)}
+              placeholder="Search by suburb or city"
+              className="mt-2 h-10 w-full rounded-xl border border-white/[.075] bg-white/[.03] px-3.5 text-[10px] font-normal normal-case tracking-normal text-white/72 outline-none transition placeholder:text-white/18 focus:border-violet-400/35 focus:ring-4 focus:ring-violet-500/10"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => {
+              setLocation("");
+              setFilter(module.filters[0] ?? "All");
+              setQuery("");
+            }}
+            className="h-10 rounded-xl border border-white/[.08] px-4 text-[9px] font-semibold text-white/45 transition hover:text-white/75"
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : null}
 
       {module.filters.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-2">
@@ -79,6 +113,7 @@ export function ModuleListings({ slug, listings }: { slug: string; listings: Lis
         <p className="text-[9px] text-white/24">
           {filtered.length} {filtered.length === 1 ? module.itemNoun : `${module.itemNoun}s`}
           {filter !== "All" ? ` in ${filter}` : ""}
+          {location ? ` near ${location}` : ""}
         </p>
       </div>
 
@@ -87,7 +122,7 @@ export function ModuleListings({ slug, listings }: { slug: string; listings: Lis
           <div className="px-6">
             <p className="text-[11px] font-semibold text-white/40">Nothing matches yet.</p>
             <p className="mx-auto mt-2 max-w-xs text-[8px] leading-4 text-white/18">
-              Try a different filter or search term. In the full release, Echelon AI will widen the net for you.
+              Try a different filter, search term or location. In the full release, Echelon AI will widen the net for you.
             </p>
           </div>
         </div>
