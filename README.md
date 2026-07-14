@@ -38,9 +38,12 @@ NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/register
 NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/auth/continue?mode=consumer&returnTo=%2Fdashboard
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/auth/continue?mode=consumer&returnTo=%2Fwelcome
+NEXT_PUBLIC_CLERK_SOCIAL_AUTH_ENABLED=false
 ```
 
 Enable **Organizations** and **Personal accounts** in the Clerk Dashboard. Use Clerk development keys for Vercel Preview deployments and production keys for the Production environment. Set `NEXT_PUBLIC_APP_URL` independently in Preview and Production, then redeploy after changing environment variables. The proxy also trusts Vercel's current preview and production hostnames.
+
+Keep `NEXT_PUBLIC_CLERK_SOCIAL_AUTH_ENABLED=false` until every enabled production social connection has custom OAuth credentials in Clerk. After configuring Google or Apple in **SSO connections**, set it to `true` and redeploy so the social buttons become available.
 
 Keyless local development continues to use the development auth stub. A Vercel production build fails safely if either Clerk key is missing.
 
