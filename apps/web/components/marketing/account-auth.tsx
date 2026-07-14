@@ -25,9 +25,6 @@ import {
 const fieldClass =
   "h-11 w-full rounded-xl border border-white/[.075] bg-white/[.03] pl-9 pr-3 text-[10px] text-white/72 outline-none transition placeholder:text-white/18 focus:border-violet-400/35 focus:bg-white/[.045] focus:ring-4 focus:ring-violet-500/10";
 
-const clerkSocialAuthEnabled =
-  process.env.NEXT_PUBLIC_CLERK_SOCIAL_AUTH_ENABLED === "true";
-
 const clerkAppearance = {
   variables: {
     colorPrimary: "#7c6cf8",
@@ -42,12 +39,8 @@ const clerkAppearance = {
     rootBox: "w-full",
     cardBox: "w-full shadow-none",
     card: "w-full border border-white/[.07] bg-[#121217] shadow-[0_30px_100px_rgba(0,0,0,.38)]",
-    ...(clerkSocialAuthEnabled
-      ? {}
-      : {
-          socialButtonsRoot: "hidden",
-          dividerRow: "hidden",
-        }),
+    socialButtonsBlockButton__apple: "hidden",
+    socialButtonsIconButton__apple: "hidden",
   },
 };
 
