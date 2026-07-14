@@ -14,10 +14,11 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Listing } from "../../lib/listings";
 import { getModule } from "../../lib/modules";
-import { useAccountStore } from "../../store/account";
+import { consumerProfile } from "../../lib/profile";
+import { mergeProfile, useAccountStore } from "../../store/account";
 
 type Step = "details" | "confirm" | "success";
 
@@ -34,16 +35,24 @@ export function EnquiryFlow({ listing }: { listing: Listing }) {
   const [step, setStep] = useState<Step>("details");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", note: "" });
+  const [profilePrefilled, setProfilePrefilled] = useState(false);
   const submitApplication = useAccountStore((state) => state.submitApplication);
   const submitRequest = useAccountStore((state) => state.submitRequest);
+  const profileOverrides = useAccountStore((state) => state.profile);
+  const isApplication = listing.module === "jobs" || listing.module === "freelancing";
+  const trackHref = isApplication ? "/applications" : "/requests";
+  const trackLabel = isApplication ? "Track in Applications" : "Track in Requests";
+
+  useEffect(() => {
+    if (!isApplication || profilePrefilled) return;
+    const profile = mergeProfile(consumerProfile, profileOverrides);
+    setForm((current) => ({ ...current, name: profile.name, email: profile.email }));
+    setProfilePrefilled(true);
+  }, [isApplication, profileOverrides, profilePrefilled]);
 
   if (!module) return null;
   const { accent, actionVerb } = module;
   const canContinue = form.name.trim().length > 1 && form.email.includes("@");
-
-  const isApplication = listing.module === "jobs" || listing.module === "freelancing";
-  const trackHref = isApplication ? "/applications" : "/requests";
-  const trackLabel = isApplication ? "Track in Applications" : "Track in Requests";
 
   function submit() {
     setLoading(true);

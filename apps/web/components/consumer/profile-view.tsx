@@ -313,6 +313,9 @@ function ProfileEditModal({
     isJobs ? profile.jobSeeker.availability : profile.freelancer.availability,
   );
   const [extra, setExtra] = useState(isJobs ? profile.jobSeeker.locationPref : profile.freelancer.hourlyRate);
+  const [focusAreas, setFocusAreas] = useState(
+    (isJobs ? profile.jobSeeker.desiredRoles : profile.freelancer.services).join(", "),
+  );
 
   function save() {
     const skillList = skills
@@ -320,9 +323,29 @@ function ProfileEditModal({
       .map((skill) => skill.trim())
       .filter(Boolean);
     if (isJobs) {
-      onSaveJobs({ headline, summary: body, skills: skillList, availability, locationPref: extra });
+      onSaveJobs({
+        headline,
+        summary: body,
+        skills: skillList,
+        availability,
+        locationPref: extra,
+        desiredRoles: focusAreas
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      });
     } else {
-      onSaveFreelance({ headline, bio: body, skills: skillList, availability, hourlyRate: extra });
+      onSaveFreelance({
+        headline,
+        bio: body,
+        skills: skillList,
+        availability,
+        hourlyRate: extra,
+        services: focusAreas
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      });
     }
   }
 
@@ -376,6 +399,10 @@ function ProfileEditModal({
               <input value={extra} onChange={(e) => setExtra(e.target.value)} className={modalField} />
             </label>
           </div>
+          <label className="block text-[9px] font-medium text-white/34">
+            {isJobs ? "Roles you're targeting" : "Services offered"} <span className="text-white/18">(comma separated)</span>
+            <input value={focusAreas} onChange={(e) => setFocusAreas(e.target.value)} className={modalField} />
+          </label>
         </div>
 
         <button
